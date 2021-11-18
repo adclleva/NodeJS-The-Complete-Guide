@@ -3,6 +3,22 @@ const http = require("http");
 
 // server callback function
 const server = http.createServer((req, res) => {
+  const url = req.url;
+  if (url === "/") {
+    res.write("<html>");
+    res.write("<head><title>My First Page</title></head>");
+    res.write(`
+      <body>
+        <form action="/message" method="POST">
+          <input type="text" name="message">
+            <button type="submit">Send</button>
+          </input>
+        </form>
+      </body>`);
+    res.write("</html>");
+    return res.end();
+  }
+
   // the req is a huge complex object that is sent to the server
   // console.log("req", req);
   console.log("url", req.url);
