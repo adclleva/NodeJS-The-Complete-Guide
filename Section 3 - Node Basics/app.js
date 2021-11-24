@@ -34,19 +34,19 @@ const server = http.createServer((request, response) => {
       body.push(chunk);
     });
 
-    request.on("end", () => {
+    return request.on("end", () => {
       const parsedBody = Buffer.concat(body).toString();
       console.log("parseBody", parsedBody); // we can work with parsedBody
 
       const message = parsedBody.split("=")[1]; // this takes the "value" from the parsed body since the key is "message"
 
       fs.writeFileSync("message.txt", message);
-    });
 
-    response.statusCode = 302;
-    // Location is the default header by the browser
-    response.setHeader("Location", "/");
-    return response.end();
+      response.statusCode = 302;
+      // Location is the default header by the browser
+      response.setHeader("Location", "/");
+      return response.end();
+    });
   }
 
   // the request is a huge complex object that is sent to the server
