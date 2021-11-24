@@ -9,6 +9,10 @@ const server = http.createServer((request, response) => {
   if (url === "/") {
     response.write("<html>");
     response.write("<head><title>My First Page</title></head>");
+
+    /**
+     * for the input, the name is the key, and the input is the value once submitted in this case
+     */
     response.write(`
       <body>
         <form action="/message" method="POST">
@@ -22,7 +26,22 @@ const server = http.createServer((request, response) => {
   }
 
   if (url === "/message" && method === "POST") {
-    fs.writeFileSync("message.txt", "DUMMY");
+    const body = [];
+
+    // this listen for a data event whenever the data event will be fired whenever a new chunk is ready to be read
+    request.on("data", (chunk) => {
+      console.log("chunk", chunk); // we don't really work with chunks
+      body.push(chunk);
+    });
+
+    request.on("end", () => {
+      const parsedBody = Buffer.concat(body).toString();
+      console.log("parseBody", parsedBody); // we can work with parsedBody
+
+      const message = parsedBody.split("=")[1]; // this takes the "value" from the parsed body since the key is "message"
+
+      fs.writeFileSync("message.txt", message);
+    });
 
     response.statusCode = 302;
     // Location is the default header by the browser
