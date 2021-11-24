@@ -40,12 +40,18 @@ const server = http.createServer((request, response) => {
 
       const message = parsedBody.split("=")[1]; // this takes the "value" from the parsed body since the key is "message"
 
-      fs.writeFileSync("message.txt", message);
+      // sometimes the code below this line may not execut since it is the "Sync" version and may need to wait for a bunch of requests
+      // this is considered blocking
+      // fs.writeFileSync("message.txt", message);
 
-      response.statusCode = 302;
-      // Location is the default header by the browser
-      response.setHeader("Location", "/");
-      return response.end();
+      // this is considered non-blocking, with the asyncronous nature of node.js
+      fs.writeFile("message.txt", message, (error) => {
+        // this response would only work once we are done working with the file and since it is within the callback function
+        response.statusCode = 302;
+        // Location is the default header by the browser
+        response.setHeader("Location", "/");
+        return response.end();
+      });
     });
   }
 
