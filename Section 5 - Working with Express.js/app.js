@@ -1,8 +1,5 @@
 // this file just spins up the server
 
-// http is a global module
-const http = require("http");
-
 // express.js is all about middleware, that executes from top to bottom
 const express = require("express");
 
@@ -19,7 +16,11 @@ app.use((req, res, next) => {
   console.log("Another the middleware!");
   res.send("<h1>Hello from Express!</h1>");
 });
-// server callback function
-const server = http.createServer(app);
 
-server.listen(3000);
+app.listen(3000);
+
+/**
+ * app.listen() does the same thing below 
+ const server = http.createServer(app);
+ server.listen(3000);
+ */
