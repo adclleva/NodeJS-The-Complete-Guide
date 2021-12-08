@@ -3,12 +3,12 @@
 // http is a global module
 const http = require("http");
 
-// express.js is all about middleware
+// express.js is all about middleware, that executes from top to bottom
 const express = require("express");
 
 const app = express();
 
-// middle ware function
+// middleware function
 // next is a function
 app.use((req, res, next) => {
   console.log("In the middleware!");
@@ -17,6 +17,7 @@ app.use((req, res, next) => {
 
 app.use((req, res, next) => {
   console.log("Another the middleware!");
+  res.send("<h1>Hello from Express!</h1>");
 });
 // server callback function
 const server = http.createServer(app);
