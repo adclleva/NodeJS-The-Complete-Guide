@@ -2,10 +2,13 @@
 
 // express.js is all about middleware, that executes from top to bottom
 const express = require("express");
+const bodyParser = require("body-parser");
 
 const app = express();
 
-// middleware function
+app.use(bodyParser.urlencoded({ extended: true }));
+
+// app.use() middleware function
 // next is a function
 app.use("/", (req, res, next) => {
   console.log("This always runs!");
@@ -13,12 +16,17 @@ app.use("/", (req, res, next) => {
 });
 
 app.use("/add-product", (req, res, next) => {
-  console.log("Another the middleware!");
-  res.send(`<h1>The "Added Product"</h1>`);
+  res.send(
+    `<form action="/product" method="POST"><input type="text" name="title"> <button type="submit">Add Product</button> </form>`
+  );
+});
+
+app.use("/product", (req, res, next) => {
+  console.log("request:", req.body);
+  res.redirect("/");
 });
 
 app.use(`/`, (req, res, next) => {
-  console.log("Another the middleware!");
   res.send("<h1>Hello from Express!</h1>");
 });
 
