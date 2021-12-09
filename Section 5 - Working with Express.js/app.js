@@ -21,6 +21,11 @@ app.use("/", (req, res, next) => {
 app.use(adminRoutes);
 app.use(shopRoutes);
 
+// a catch all middleware filter when the url doesn't match anything
+app.use((req, res, next) => {
+  res.status(404).send("<h1>Page not found</h1>");
+});
+
 app.listen(3000);
 
 /**
