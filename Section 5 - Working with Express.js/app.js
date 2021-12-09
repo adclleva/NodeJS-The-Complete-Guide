@@ -18,10 +18,11 @@ app.use("/", (req, res, next) => {
   next();
 });
 
-app.use(adminRoutes);
+// this appends the /admin to the routes within the file
+app.use("/admin", adminRoutes);
 app.use(shopRoutes);
 
-// a catch all middleware filter when the url doesn't match anything
+// a catch all route when the url doesn't match anything
 app.use((req, res, next) => {
   res.status(404).send("<h1>Page not found</h1>");
 });
