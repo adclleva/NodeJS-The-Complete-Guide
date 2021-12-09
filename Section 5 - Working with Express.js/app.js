@@ -6,6 +6,9 @@ const bodyParser = require("body-parser");
 
 const app = express();
 
+const adminRoutes = require("./routes/admin");
+const shopRoutes = require("./routes/shop");
+
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // app.use() middleware function
@@ -15,21 +18,8 @@ app.use("/", (req, res, next) => {
   next();
 });
 
-// this will only trigger for only post requests
-app.post("/add-product", (req, res, next) => {
-  res.send(
-    `<form action="/product" method="POST"><input type="text" name="title"> <button type="submit">Add Product</button> </form>`
-  );
-});
-
-app.use("/product", (req, res, next) => {
-  console.log("request:", req.body);
-  res.redirect("/");
-});
-
-app.use(`/`, (req, res, next) => {
-  res.send("<h1>Hello from Express!</h1>");
-});
+app.use(adminRoutes);
+app.use(shopRoutes);
 
 app.listen(3000);
 
