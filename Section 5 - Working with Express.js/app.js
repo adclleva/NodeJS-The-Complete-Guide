@@ -15,7 +15,8 @@ app.use("/", (req, res, next) => {
   next();
 });
 
-app.use("/add-product", (req, res, next) => {
+// this will only trigger for only post requests
+app.post("/add-product", (req, res, next) => {
   res.send(
     `<form action="/product" method="POST"><input type="text" name="title"> <button type="submit">Add Product</button> </form>`
   );
