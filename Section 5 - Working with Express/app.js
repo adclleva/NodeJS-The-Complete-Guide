@@ -13,6 +13,10 @@ const shopRoutes = require("./routes/shop");
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// to serve static files of the folder that we want to grant Read access to
+// in this case we want to serve the files within the public folder to access the css
+app.use(express.static(path.join(__dirname, "public")));
+
 // app.use() middleware function
 // next is a function
 app.use("/", (req, res, next) => {
