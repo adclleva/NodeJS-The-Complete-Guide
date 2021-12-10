@@ -9,7 +9,7 @@
       "request": "launch",
       "name": "Launch Program",
       "skipFiles": ["<node_internals>/**"],
-      "program": "${workspaceFolder}/Section 6 - Working with Dynamic Content and Adding Templating Engines",
+      "program": "${workspaceFolder}/Section 5 - Working with Express",
       "restart": true,
       "runtimeExecutable": "nodemon",
       "console": "integratedTerminal"
