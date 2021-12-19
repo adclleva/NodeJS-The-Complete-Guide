@@ -2,11 +2,14 @@ const path = require("path");
 
 const express = require("express");
 const bodyParser = require("body-parser");
+const expressHandleBars = require("express-handlebars");
 
 const app = express();
 
+app.engine("handlebars", expressHandleBars());
+
 // uses express to compile dynamic templates with pug engine
-app.set("view engine", "pug");
+app.set("view engine", "handlebars");
 
 // to show us where to find the templates
 app.set("views", "views");
