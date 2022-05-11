@@ -2,17 +2,19 @@ const path = require("path");
 
 const express = require("express");
 const bodyParser = require("body-parser");
-const expressHandleBars = require("express-handlebars");
+// const expressHandleBars = require("express-handlebars");
 
 const app = express();
 
-app.engine(
-  "handlebars",
-  expressHandleBars({ layoutsDirectory: "views/layouts", defaultLayout: "main-layout", extname: "handlebars" })
-);
+// app.engine(
+//   "handlebars",
+//   expressHandleBars({ layoutsDirectory: "views/layouts", defaultLayout: "main-layout", extname: "handlebars" })
+// );
 
 // uses express to compile dynamic templates with any html template engine
-app.set("view engine", "handlebars");
+// app.set("view engine", "handlebars");
+
+app.set("view engine", "ejs");
 
 // to show us where to find the templates
 app.set("views", "views");
