@@ -6,7 +6,10 @@ const expressHandleBars = require("express-handlebars");
 
 const app = express();
 
-app.engine("handlebars", expressHandleBars());
+app.engine(
+  "handlebars",
+  expressHandleBars({ layoutsDirectory: "views/layouts", defaultLayout: "main-layout", extname: "handlebars" })
+);
 
 // uses express to compile dynamic templates with any html template engine
 app.set("view engine", "handlebars");
