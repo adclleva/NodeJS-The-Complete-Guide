@@ -8,7 +8,7 @@ const app = express();
 
 app.engine("handlebars", expressHandleBars());
 
-// uses express to compile dynamic templates with pug engine
+// uses express to compile dynamic templates with any html template engine
 app.set("view engine", "handlebars");
 
 // to show us where to find the templates

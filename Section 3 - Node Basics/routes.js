@@ -38,7 +38,7 @@ const requestHandler = (request, response) => {
 
       const message = parsedBody.split("=")[1]; // this takes the "value" from the parsed body since the key is "message"
 
-      // sometimes the code below this line may not execut since it is the "Sync" version and may need to wait for a bunch of requests
+      // sometimes the code below this line may not execute since it is the "Sync" version and may need to wait for a bunch of requests
       // this is considered blocking
       // fs.writeFileSync("message.txt", message);
 
