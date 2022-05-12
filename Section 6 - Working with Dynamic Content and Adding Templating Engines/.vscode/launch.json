@@ -9,7 +9,7 @@
       "request": "launch",
       "name": "Launch Program",
       "skipFiles": ["<node_internals>/**"],
-      "program": "${workspaceFolder}/Section 7 - The Model View Controller (MVC)",
+      "program": "${workspaceFolder}/Section 6 - Working with Dynamic Content and Adding Templating Engines",
       "restart": true,
       "runtimeExecutable": "nodemon",
       "console": "integratedTerminal"
