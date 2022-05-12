@@ -19,18 +19,14 @@ exports.postAddProduct = (req, res, next) => {
 };
 
 exports.getProducts = (req, res, next) => {
-  const products = Product.fetchAll();
-  // res.sendFile(path.join(rootDir, 'views', 'shop.html'));
-
-  // this will use the default template engine declared in the app.js file
-  // we don't have to construct a path to the folder since we defined that all views are in the views folder
-  // the second argument can be the data that we would like to pass to the template
-  res.render("shop", {
-    products: products,
-    pageTitle: "My Shop",
-    path: "/",
-    hasProducts: products.length > 0,
-    activeShop: true,
-    productCSS: true,
+  Product.fetchAll((products) => {
+    res.render("shop", {
+      products: products,
+      pageTitle: "My Shop",
+      path: "/",
+      hasProducts: products.length > 0,
+      activeShop: true,
+      productCSS: true,
+    });
   });
 };
