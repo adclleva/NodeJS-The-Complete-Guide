@@ -9,7 +9,7 @@
       "request": "launch",
       "name": "Launch Program",
       "skipFiles": ["<node_internals>/**"],
-      "program": "${workspaceFolder}/Section 8 - Enhancing the MVC App",
+      "program": "${workspaceFolder}/Section 7 - The Model View Controller (MVC)",
       "restart": true,
       "runtimeExecutable": "nodemon",
       "console": "integratedTerminal"
