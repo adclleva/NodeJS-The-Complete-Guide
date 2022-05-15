@@ -9,7 +9,7 @@
       "request": "launch",
       "name": "Launch Program",
       "skipFiles": ["<node_internals>/**"],
-      "program": "${workspaceFolder}/Section 9 - Dynamic Routes & Advanced Models",
+      "program": "${workspaceFolder}/Section 8 - Enhancing the MVC App",
       "restart": true,
       "runtimeExecutable": "nodemon",
       "console": "integratedTerminal"
