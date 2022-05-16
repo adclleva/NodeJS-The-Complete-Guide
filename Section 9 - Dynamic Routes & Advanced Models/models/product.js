@@ -1,13 +1,9 @@
 const fs = require("fs");
 const path = require("path");
 
-const rootDir = require("../util/path");
-
-const p = path.join(rootDir, "data", "products.json");
+const p = path.join(path.dirname(process.mainModule.filename), "data", "products.json");
 
 const getProductsFromFile = (cb) => {
-  // reads the entire files content of a file
-  // since we are using an arrow function, 'this' would be referred to this class
   fs.readFile(p, (err, fileContent) => {
     if (err) {
       cb([]);
@@ -16,6 +12,7 @@ const getProductsFromFile = (cb) => {
     }
   });
 };
+
 module.exports = class Product {
   constructor(title, imageUrl, description, price) {
     this.title = title;
@@ -25,18 +22,15 @@ module.exports = class Product {
   }
 
   save() {
-    // we use an array function to make sure `this` refers to the object of this class
+    this.id = Math.random().toString();
     getProductsFromFile((products) => {
       products.push(this);
-
-      // to save to the file
       fs.writeFile(p, JSON.stringify(products), (err) => {
         console.log(err);
       });
     });
   }
 
-  // we use a callback to handle the asynchronous nature of these calls
   static fetchAll(cb) {
     getProductsFromFile(cb);
   }
