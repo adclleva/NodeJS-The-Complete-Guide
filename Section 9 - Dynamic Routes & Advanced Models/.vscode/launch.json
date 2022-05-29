@@ -9,7 +9,7 @@
       "request": "launch",
       "name": "Launch Program",
       "skipFiles": ["<node_internals>/**"],
-      "program": "${workspaceFolder}/Section 10 - SQL Introduction",
+      "program": "${workspaceFolder}/Section 9 - Dynamic Routes & Advanced Models",
       "restart": true,
       "runtimeExecutable": "nodemon",
       "console": "integratedTerminal"
