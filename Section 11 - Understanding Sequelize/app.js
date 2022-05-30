@@ -6,8 +6,11 @@ const bodyParser = require("body-parser");
 const errorController = require("./controllers/error");
 const sequelize = require("./util/database");
 
+// models
 const Product = require("./models/product");
 const User = require("./models/user");
+const Cart = require("./models/cart");
+const CartItem = require("./models/cart-item");
 
 const app = express();
 
@@ -43,13 +46,20 @@ Product.belongsTo(User, {
   constraints: true,
   onDelete: "CASCADE", // if we delete a User, it will delete the products
 });
+User.hasMany(Product); // the inverse of the relation about which isn't necessary
 
-User.hasMany(Product);
+// these two are synonymous as one direction is enough
+User.hasOne(Cart);
+Cart.belongsTo(User);
+
+// many to many relationship
+Cart.belongsToMany(Product, { through: CartItem }); // through is how the relationship is linked
+Product.belongsToMany(Cart, { through: CartItem });
 
 // syncs models that was defined and creates the tables for them
 sequelize
-  // .sync({ force: true }) <- we don't do this in production since we don't want to overwrite prod data all the time
-  .sync()
+  .sync({ force: true }) // <- we don't do this in production since we don't want to overwrite prod data all the time
+  // .sync()
   .then((result) => {
     return User.findByPk(1);
     // app.listen(3000);
