@@ -77,6 +77,7 @@ exports.getCart = (req, res, next) => {
 exports.postCart = (req, res, next) => {
   const productId = req.body.productId;
   let fetchedCart; // to store the fetchedCart
+  let newQuantity = 1;
 
   req.user
     .getCart()
@@ -89,18 +90,20 @@ exports.postCart = (req, res, next) => {
       if (products.length > 0) {
         product = products[0];
       }
-      let newQuantity = 1;
+
+      // logic if a product currently exists in the cart
       if (product) {
-        // ...
+        const oldQuantity = product.cartItem.quantity; // we can access carItem because of the relationship
+        newQuantity = oldQuantity + 1;
+        return product;
       }
 
-      return Product.findByPk(productId)
-        .then((product) => {
-          // through is the in between relation within the table
-          // addProduct is a magic method from sequelize because of the many to many relationship
-          return fetchedCart.addProduct(product, { through: { quantity: newQuantity } });
-        })
-        .catch((err) => console.log(err));
+      return Product.findByPk(productId);
+    })
+    .then((product) => {
+      //   through is the in between relation within the table
+      //   addProduct is a magic method from sequelize because of the many to many relationship
+      return fetchedCart.addProduct(product, { through: { quantity: newQuantity } });
     })
     .then(() => {
       res.redirect("/cart");
