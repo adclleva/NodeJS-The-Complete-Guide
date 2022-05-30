@@ -166,6 +166,7 @@ exports.postOrder = (req, res, next) => {
 exports.getOrders = (req, res, next) => {
   req.user
     // with the concept of eager loading through sequelize which makes this work because of the relationships
+    // which allows to fetch the associated products for an order
     .getOrders({ include: ["products"] })
     .then((orders) => {
       res.render("shop/orders", {
