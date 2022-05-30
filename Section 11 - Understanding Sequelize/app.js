@@ -11,6 +11,8 @@ const Product = require("./models/product");
 const User = require("./models/user");
 const Cart = require("./models/cart");
 const CartItem = require("./models/cart-item");
+const Order = require("./models/order");
+const OrderItem = require("./models/order-item");
 
 const app = express();
 
@@ -56,10 +58,18 @@ Cart.belongsTo(User);
 Cart.belongsToMany(Product, { through: CartItem }); // through is how the relationship is linked
 Product.belongsToMany(Cart, { through: CartItem });
 
+// one to many relationship
+Order.belongsTo(User);
+User.hasMany(Order);
+
+// many to many relationship
+Order.belongsToMany(Product, { through: OrderItem }); // related with the in-between table within the order item table
+Product.belongsToMany(Order, { through: OrderItem });
+
 // syncs models that was defined and creates the tables for them
 sequelize
-  // .sync({ force: true }) // <- we don't do this in production since we don't want to overwrite prod data all the time
-  .sync()
+  .sync({ force: true }) // <- we don't do this in production since we don't want to overwrite prod data all the time
+  // .sync()
   .then((result) => {
     return User.findByPk(1);
     // app.listen(3000);
