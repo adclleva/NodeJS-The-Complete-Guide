@@ -1,5 +1,6 @@
 const Product = require("../models/product");
 const Cart = require("../models/cart");
+const User = require("../models/user");
 
 exports.getProducts = (req, res, next) => {
   Product.findAll()
@@ -52,22 +53,25 @@ exports.getIndex = (req, res, next) => {
 };
 
 exports.getCart = (req, res, next) => {
-  Cart.getCart((cart) => {
-    Product.fetchAll((products) => {
-      const cartProducts = [];
-      for (product of products) {
-        const cartProductData = cart.products.find((cartProduct) => cartProduct.id === product.id);
-        if (cartProductData) {
-          cartProducts.push({ productData: product, quantity: cartProductData.quantity });
-        }
-      }
-      res.render("shop/cart", {
-        path: "/cart",
-        pageTitle: "Your Cart",
-        products: cartProducts,
-      });
-    });
-  });
+  // since we store the users in the middleware that we created within the app.js file
+  // we use the association methods from sequelize to get a the user's cart
+  // req.user.cart <- this will return undefined because we can't access this as a property and only through the method
+  req.user
+    .getCart()
+    .then((cart) => {
+      // console.log(cart)
+      return cart
+        .getProducts()
+        .then((products) =>
+          res.render("shop/cart", {
+            path: "/cart",
+            pageTitle: "Your Cart",
+            products: products,
+          })
+        )
+        .catch((err) => console.log(err));
+    })
+    .catch((err) => console.log(err));
 };
 
 exports.postCart = (req, res, next) => {

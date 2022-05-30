@@ -58,8 +58,8 @@ Product.belongsToMany(Cart, { through: CartItem });
 
 // syncs models that was defined and creates the tables for them
 sequelize
-  .sync({ force: true }) // <- we don't do this in production since we don't want to overwrite prod data all the time
-  // .sync()
+  // .sync({ force: true }) // <- we don't do this in production since we don't want to overwrite prod data all the time
+  .sync()
   .then((result) => {
     return User.findByPk(1);
     // app.listen(3000);
@@ -76,7 +76,11 @@ sequelize
     return user;
   })
   .then((user) => {
-    // console.log(user);
-    app.listen(3000);
+    // we also want to create a cart for the user
+    return user.createCart();
+  })
+  .then((cart) => {
+    // console.log(cart);
+    app.listen(3000); // this is to bind and listen to the connections to the specified host and port
   })
   .catch((err) => console.log(err));
