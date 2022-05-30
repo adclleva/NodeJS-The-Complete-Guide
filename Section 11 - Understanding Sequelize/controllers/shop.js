@@ -1,6 +1,4 @@
 const Product = require("../models/product");
-const Cart = require("../models/cart");
-const User = require("../models/user");
 
 exports.getProducts = (req, res, next) => {
   Product.findAll()
@@ -125,6 +123,36 @@ exports.postCartDeleteProduct = (req, res, next) => {
     .then((result) => {
       console.log("Cart Destroyed!");
       res.redirect("/cart");
+    })
+    .catch((err) => console.log(err));
+};
+
+exports.postOrder = (req, res, next) => {
+  req.user
+    .getCart()
+    .then((cart) => {
+      return cart.getProducts();
+    })
+    .then((products) => {
+      // we can use this method because of sequelize
+      req.user
+        .createOrder()
+        .then((order) => {
+          return order.addProducts(
+            // we add all the products that we have in a cart to be put into the order
+            // we have to map each product to get the correct quantities
+            products.map((product) => {
+              product.orderItem = {
+                quantity: product.cartItem.quantity,
+              };
+              return product;
+            })
+          );
+        })
+        .catch((err) => console.log(err));
+    })
+    .then((result) => {
+      res.redirect("/orders");
     })
     .catch((err) => console.log(err));
 };

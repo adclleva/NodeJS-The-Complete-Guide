@@ -68,8 +68,8 @@ Product.belongsToMany(Order, { through: OrderItem });
 
 // syncs models that was defined and creates the tables for them
 sequelize
-  .sync({ force: true }) // <- we don't do this in production since we don't want to overwrite prod data all the time
-  // .sync()
+  // .sync({ force: true }) // <- we don't do this in production since we don't want to overwrite prod data all the time
+  .sync()
   .then((result) => {
     return User.findByPk(1);
     // app.listen(3000);
