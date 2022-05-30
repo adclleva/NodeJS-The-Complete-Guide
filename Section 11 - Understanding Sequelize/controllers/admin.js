@@ -38,8 +38,13 @@ exports.getEditProduct = (req, res, next) => {
   }
 
   const productId = req.params.productId;
-  Product.findByPk(productId)
-    .then((product) => {
+
+  // another association sequelize method we can use
+  // Product.findByPk(productId) <- this is another approach
+  req.user
+    .getProducts({ where: { id: productId } }) // this always returns an array
+    .then((products) => {
+      const product = products[0];
       if (!product) {
         return res.redirect("/");
       }
@@ -55,7 +60,7 @@ exports.getEditProduct = (req, res, next) => {
 
 exports.postEditProduct = (req, res, next) => {
   const productId = req.body.productId;
-  console.log("productId", productId);
+
   const updatedTitle = req.body.title;
   const updatedPrice = req.body.price;
   const updatedImageUrl = req.body.imageUrl;
@@ -77,7 +82,9 @@ exports.postEditProduct = (req, res, next) => {
 };
 
 exports.getProducts = (req, res, next) => {
-  Product.findAll()
+  // Product.findAll() <- an alternative way to get all products
+  req.user
+    .getProducts()
     .then((products) => {
       res.render("admin/products", {
         prods: products,
