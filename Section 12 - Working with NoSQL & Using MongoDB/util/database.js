@@ -1,9 +1,14 @@
-const Sequelize = require("sequelize");
+const mongodb = require("mongodb");
 
-// this is the entire database collection pool package
-const sequelize = new Sequelize("node-complete", "root", "mysql123!", {
-  dialect: "mysql",
-  host: "localhost",
-});
+const MongoClient = mongodb.MongoClient;
 
-module.exports = sequelize;
+const mongoConnect = (callback) => {
+  MongoClient.connect("mongodb+srv://arvin:mongodb123%21@cluster0.996hxxe.mongodb.net/?retryWrites=true&w=majority")
+    .then((client) => {
+      console.log("Connected!");
+      callback(client);
+    })
+    .catch((err) => console.log(err));
+};
+
+module.exports = mongoConnect;
