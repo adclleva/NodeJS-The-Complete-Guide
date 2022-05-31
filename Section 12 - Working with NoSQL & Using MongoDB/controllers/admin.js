@@ -26,55 +26,51 @@ exports.postAddProduct = (req, res, next) => {
     .catch((err) => console.log(err));
 };
 
-// exports.getEditProduct = (req, res, next) => {
-//   const editMode = req.query.edit;
-//   if (!editMode) {
-//     return res.redirect("/");
-//   }
+exports.getEditProduct = (req, res, next) => {
+  const editMode = req.query.edit;
+  if (!editMode) {
+    return res.redirect("/");
+  }
 
-//   const productId = req.params.productId;
+  const productId = req.params.productId;
 
-//   // another association sequelize method we can use
-//   // Product.findByPk(productId) <- this is another approach
-//   req.user
-//     .getProducts({ where: { id: productId } }) // this always returns an array
-//     .then((products) => {
-//       const product = products[0];
-//       if (!product) {
-//         return res.redirect("/");
-//       }
-//       res.render("admin/edit-product", {
-//         pageTitle: "Edit Product",
-//         path: "/admin/edit-product",
-//         editing: editMode,
-//         product: product,
-//       });
-//     })
-//     .catch((err) => console.log(err));
-// };
+  Product.findById(productId)
+    .then((product) => {
+      if (!product) {
+        return res.redirect("/");
+      }
+      res.render("admin/edit-product", {
+        pageTitle: "Edit Product",
+        path: "/admin/edit-product",
+        editing: editMode,
+        product: product,
+      });
+    })
+    .catch((err) => console.log(err));
+};
 
-// exports.postEditProduct = (req, res, next) => {
-//   const productId = req.body.productId;
+exports.postEditProduct = (req, res, next) => {
+  const productId = req.body.productId;
 
-//   const updatedTitle = req.body.title;
-//   const updatedPrice = req.body.price;
-//   const updatedImageUrl = req.body.imageUrl;
-//   const updatedDescription = req.body.description;
+  const updatedTitle = req.body.title;
+  const updatedPrice = req.body.price;
+  const updatedImageUrl = req.body.imageUrl;
+  const updatedDescription = req.body.description;
 
-//   Product.findByPk(productId)
-//     .then((product) => {
-//       product.title = updatedTitle;
-//       product.price = updatedPrice;
-//       product.description = updatedDescription;
-//       product.imageUrl = updatedImageUrl;
-//       return product.save(); // this will save the changes to the database
-//     })
-//     .then((result) => {
-//       console.log("Product Updated");
-//       res.redirect("/admin/products");
-//     })
-//     .catch((err) => console.log(err));
-// };
+  Product.findById(productId)
+    .then((product) => {
+      product.title = updatedTitle;
+      product.price = updatedPrice;
+      product.description = updatedDescription;
+      product.imageUrl = updatedImageUrl;
+      return product.save(); // this will save the changes to the database
+    })
+    .then((result) => {
+      console.log("Product Updated");
+      res.redirect("/admin/products");
+    })
+    .catch((err) => console.log(err));
+};
 
 exports.getProducts = (req, res, next) => {
   Product.fetchAll()
