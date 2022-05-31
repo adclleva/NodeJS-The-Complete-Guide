@@ -6,6 +6,9 @@ const bodyParser = require("body-parser");
 const errorController = require("./controllers/error");
 const mongoConnect = require("./util/database").mongoConnect;
 
+// models
+const User = require("./models/user");
+
 const app = express();
 
 app.set("view engine", "ejs");
@@ -19,15 +22,14 @@ app.use(express.static(path.join(__dirname, "public")));
 
 // remember that this line only runs as middleware for incoming requests
 app.use((req, res, next) => {
-  // User.findByPk(1)
-  //   .then((user) => {
-  //     // user is a sequalized object from the db
-  //     // user from the request is null by default by the way we currently have it
-  //     req.user = user;
-  //     // this allows us to store the user in any of our requests
-  //     next();
-  //   })
-  //   .catch((err) => console.log(err));
+  User.findByPk("6296860cb6de35adeac64940") // our generated user id
+    .then((user) => {
+      // user from the request is null by default by the way we currently have it
+      req.user = user;
+      // this allows us to store the user in any of our requests
+      next();
+    })
+    .catch((err) => console.log(err));
   next();
 });
 
