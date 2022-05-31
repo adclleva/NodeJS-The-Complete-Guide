@@ -14,15 +14,10 @@ exports.postAddProduct = (req, res, next) => {
   const price = req.body.price;
   const description = req.body.description;
 
-  // this is a more elegant way of creating a product
-  // including an association through sequelize more in its docs https://sequelize.org/api/v6/identifiers
-  req.user
-    .createProduct({
-      title: title,
-      price: price,
-      imageUrl: imageUrl,
-      description: description,
-    })
+  const product = new Product(title, price, description, imageUrl);
+
+  product
+    .save()
     .then((result) => {
       console.log("results", result);
       console.log("Created Product!");
