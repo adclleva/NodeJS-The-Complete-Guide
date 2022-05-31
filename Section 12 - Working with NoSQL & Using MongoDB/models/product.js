@@ -7,7 +7,7 @@ class Product {
     this.price = price;
     this.description = description;
     this.imageUrl = imageUrl;
-    this._id = id;
+    this._id = new mongodb.ObjectId(id);
   }
 
   save() {
@@ -17,7 +17,7 @@ class Product {
       // update product
       // updated one first finds the document where the _id matches the mondb objectId
       // then uses the $set operdator to replace the values of the matched document
-      dbOperation = db.collection("products").updateOne({ _id: new mongodb.ObjectId(this.id) }, { $set: this });
+      dbOperation = db.collection("products").updateOne({ _id: this._id }, { $set: this });
     } else {
       // create product
       dbOperation = db.collection("products").insertOne(this);
