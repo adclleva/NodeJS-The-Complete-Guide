@@ -23,7 +23,7 @@ class Product {
       dbOperation = db.collection("products").insertOne(this);
     }
 
-    dbOperation
+    return dbOperation
       .then((result) => {
         console.log(result);
       })
