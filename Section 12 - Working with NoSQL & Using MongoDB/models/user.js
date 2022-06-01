@@ -40,6 +40,30 @@ class User {
     return db.collection("users").updateOne({ _id: new ObjectId(this._id) }, { $set: { cart: updatedCart } });
   }
 
+  getCart() {
+    const db = getDb();
+
+    const productIds = this.cart.items.map((item) => item.productId);
+
+    // we are telling mongodb to find a document(s) where the _id is within these productIds by using the $in operator
+    return db
+      .collection("products")
+      .find({ _id: { $in: productIds } })
+      .toArray()
+      .then((products) => {
+        return products.map((product) => {
+          return {
+            ...product,
+            // this.cart refers to the overall User class when called within this function
+            quantity: this.cart.items.find((item) => {
+              return item.productId.toString() === product._id.toString();
+            }).quantity,
+          };
+        });
+      })
+      .catch((err) => console.log(err));
+  }
+
   static findById(userId) {
     const db = getDb();
 
