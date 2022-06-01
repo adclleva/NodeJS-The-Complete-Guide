@@ -80,6 +80,9 @@ class User {
     const db = getDb();
 
     // we call the class method to work with this data
+    // we first get the cart items to get the products so we can use the document object that we created
+    // to insert into the mongodb a single document to the collection
+    // then we update and clear the cart
     return this.getCart()
       .then((products) => {
         const order = {
@@ -102,6 +105,12 @@ class User {
 
   getOrders() {
     const db = getDb();
+
+    // we find the orders based on the user's match _id
+    return db
+      .collection("orders")
+      .find({ "user._id": new ObjectId(this._id) })
+      .toArray();
   }
 
   static findById(userId) {
