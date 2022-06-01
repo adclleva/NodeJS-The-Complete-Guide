@@ -91,33 +91,7 @@ exports.postCartDeleteProduct = (req, res, next) => {
 exports.postOrder = (req, res, next) => {
   let fetchedCart;
   req.user
-    .getCart()
-    .then((cart) => {
-      fetchedCart = cart;
-      return cart.getProducts();
-    })
-    .then((products) => {
-      // we can use this method because of sequelize
-      req.user
-        .createOrder()
-        .then((order) => {
-          return order.addProducts(
-            // we add all the products that we have in a cart to be put into the order
-            // we have to map each product to get the correct quantities
-            products.map((product) => {
-              product.orderItem = {
-                quantity: product.cartItem.quantity,
-              };
-              return product;
-            })
-          );
-        })
-        .catch((err) => console.log(err));
-    })
-    .then((result) => {
-      // this will clean up the cart after an order has been set
-      return fetchedCart.setProducts(null);
-    })
+    .addOrder()
     .then((result) => {
       res.redirect("/orders");
     })
