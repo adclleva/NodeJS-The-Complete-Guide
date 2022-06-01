@@ -79,9 +79,18 @@ class User {
   addOrder() {
     const db = getDb();
 
-    return db
-      .collection("orders")
-      .insertOne(this.cart)
+    // we call the class method to work with this data
+    return this.getCart()
+      .then((products) => {
+        const order = {
+          items: products,
+          user: {
+            _id: new ObjectId(this._id),
+            name: this.name,
+          },
+        };
+        return db.collection("orders").insertOne(order);
+      })
       .then((result) => {
         // we want to clear the cart after an order has been made
         this.cart = { items: [] };
@@ -89,6 +98,10 @@ class User {
         return db.collection("users").updateOne({ _id: ObjectId(this._id) }, { $set: { cart: { items: [] } } });
       })
       .catch((err) => console.log(err));
+  }
+
+  getOrders() {
+    const db = getDb();
   }
 
   static findById(userId) {
