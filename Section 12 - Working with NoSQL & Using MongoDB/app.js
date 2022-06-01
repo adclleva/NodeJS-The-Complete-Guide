@@ -22,7 +22,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 // remember that this line only runs as middleware for incoming requests
 app.use((req, res, next) => {
-  User.findByPk("6296860cb6de35adeac64940") // our generated user id
+  User.findById("6296860cb6de35adeac64940") // our generated user id
     .then((user) => {
       // user from the request is null by default by the way we currently have it
       req.user = user;
