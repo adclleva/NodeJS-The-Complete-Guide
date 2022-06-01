@@ -6,7 +6,7 @@ class User {
   constructor(username, email, cart, id) {
     this.name = username;
     this.email = email;
-    this.cart = cart;
+    this.cart = cart; // {items: []}
     this._id = id;
   }
 
@@ -20,7 +20,7 @@ class User {
 
     // for adding a new item
     const updatedCart = {
-      items: [{ ...product, quantity: 1 }],
+      items: [{ productId: new ObjectId(product.id), quantity: 1 }],
     };
 
     const db = getDb();

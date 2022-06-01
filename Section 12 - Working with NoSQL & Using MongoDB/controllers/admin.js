@@ -10,7 +10,7 @@ exports.getAddProduct = (req, res, next) => {
 
 exports.postAddProduct = (req, res, next) => {
   const userId = req.user._id;
-
+  console.log("userId", userId);
   const title = req.body.title;
   const imageUrl = req.body.imageUrl;
   const price = req.body.price;

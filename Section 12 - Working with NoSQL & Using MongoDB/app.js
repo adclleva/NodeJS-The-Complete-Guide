@@ -25,12 +25,11 @@ app.use((req, res, next) => {
   User.findById("6296860cb6de35adeac64940") // our generated user id
     .then((user) => {
       // user from the request is null by default by the way we currently have it
-      req.user = user;
+      req.user = new User(user.name, user.email, user.cart, user._id);
       // this allows us to store the user in any of our requests
       next();
     })
     .catch((err) => console.log(err));
-  next();
 });
 
 app.use("/admin", adminRoutes);
