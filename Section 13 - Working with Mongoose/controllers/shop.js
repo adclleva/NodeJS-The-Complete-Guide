@@ -86,11 +86,13 @@ exports.postOrder = (req, res, next) => {
   req.user
     .populate("cart.items.productId") // we must select the path of what data to get and now returns a promise
     .then((user) => {
+      console.log(user.cart.items);
       // we want to extract the desired product data for the order model
       const products = user.cart.items.map((item) => {
         return {
           quantity: item.quantity,
-          product: item.productId,
+          // _doc is what mongoose provides for us to get all the document data within the productId
+          product: { ...item.productId._doc },
         };
       });
 
