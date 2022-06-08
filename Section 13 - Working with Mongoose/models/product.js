@@ -22,6 +22,7 @@ const productSchema = new Schema({
   },
 });
 
+// first argument is used for naming the collection in th database
 module.exports = mongoose.model("Product", productSchema);
 
 // const mongodb = require("mongodb");
