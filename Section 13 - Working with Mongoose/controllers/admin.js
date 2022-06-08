@@ -18,6 +18,7 @@ exports.postAddProduct = (req, res, next) => {
     price: price,
     description: description,
     imageUrl: imageUrl,
+    userId: req.user, // mongoose can pick the _id from the user object conveniently
   });
 
   product

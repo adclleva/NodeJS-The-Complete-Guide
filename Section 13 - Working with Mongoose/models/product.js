@@ -20,6 +20,12 @@ const productSchema = new Schema({
     type: String,
     required: true,
   },
+  userId: {
+    type: Schema.Types.ObjectId,
+    // ref references to the User schema model to have the relation set up
+    ref: "User",
+    required: true,
+  },
 });
 
 // first argument is used for naming the collection in th database
