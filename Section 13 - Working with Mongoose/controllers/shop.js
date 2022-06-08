@@ -1,4 +1,5 @@
 const Product = require("../models/product");
+const Order = require("../models/order");
 
 exports.getProducts = (req, res, next) => {
   // find is a mongoose static method
@@ -82,9 +83,27 @@ exports.postCartDeleteProduct = (req, res, next) => {
 };
 
 exports.postOrder = (req, res, next) => {
-  let fetchedCart;
   req.user
-    .addOrder()
+    .populate("cart.items.productId") // we must select the path of what data to get and now returns a promise
+    .then((user) => {
+      // we want to extract the desired product data for the order model
+      const products = user.cart.items.map((item) => {
+        return {
+          quantity: item.quantity,
+          product: item.productId,
+        };
+      });
+
+      const order = new Order({
+        user: {
+          name: req.user.name,
+          userId: req.user,
+        },
+        products: products,
+      });
+
+      return order.save();
+    })
     .then((result) => {
       res.redirect("/orders");
     })
