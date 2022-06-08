@@ -1,7 +1,8 @@
-const mongoos = require("mongoose");
+const mongoose = require("mongoose");
 
 const Schema = mongoose.Schema;
 
+// the _id gets created automatically through mongoose
 const productSchema = new Schema({
   title: {
     type: String,
@@ -20,6 +21,8 @@ const productSchema = new Schema({
     required: true,
   },
 });
+
+module.exports = mongoose.model("Product", productSchema);
 
 // const mongodb = require("mongodb");
 // const getDb = require("../util/database").getDb;
