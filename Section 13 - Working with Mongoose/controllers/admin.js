@@ -83,7 +83,15 @@ exports.postEditProduct = (req, res, next) => {
 exports.getProducts = (req, res, next) => {
   // the find static method returns the products and not a cursor
   Product.find()
+    // select is useful for selecting the data that you want to show
+    // .select('title price -_id')
+
+    // useful mongoose utility method to populate a certain field with all the information and not just the _id
+    // this is helpful for getting the data that you want with writing nested queries on your own
+    // .populate("userId")
+
     .then((products) => {
+      console.log("PRODUCTS", products);
       res.render("admin/products", {
         prods: products,
         pageTitle: "Admin Products",
