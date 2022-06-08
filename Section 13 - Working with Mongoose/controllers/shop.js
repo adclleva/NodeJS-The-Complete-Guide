@@ -16,6 +16,7 @@ exports.getProducts = (req, res, next) => {
 exports.getProduct = (req, res, next) => {
   const productId = req.params.productId;
 
+  // findById is a mongoose method
   Product.findById(productId)
     .then((product) => {
       res.render("shop/product-detail", {
@@ -25,18 +26,6 @@ exports.getProduct = (req, res, next) => {
       });
     })
     .catch((err) => console.log(err));
-
-  // *** alternative approach
-  // *** this returns an array
-  // Product.findAll({ where: { id: productId } })
-  //   .then((products) => {
-  //     res.render("shop/product-detail", {
-  //       product: products[0],
-  //       pageTitle: products[0].title,
-  //       path: "/products",
-  //     });
-  //   })
-  //   .catch((err) => console.log(err));
 };
 
 exports.getIndex = (req, res, next) => {
