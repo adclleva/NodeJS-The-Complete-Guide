@@ -43,8 +43,11 @@ exports.getIndex = (req, res, next) => {
 exports.getCart = (req, res, next) => {
   // since we store the users in the middleware that we created within the app.js file
   req.user
-    .getCart()
-    .then((products) => {
+    .populate("cart.items.productId") // we must select the path of what data to get and now returns a promise
+    .then((user) => {
+      // remember that the product data will be nested in a productId field
+      const products = user.cart.items;
+
       res.render("shop/cart", {
         path: "/cart",
         pageTitle: "Your Cart",
