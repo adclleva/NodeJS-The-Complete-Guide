@@ -22,6 +22,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use((req, res, next) => {
   User.findById("62a1177c8368104cec55dc29")
     .then((user) => {
+      // setting this to be part of the upcoming requests
       req.user = user;
       next();
     })
