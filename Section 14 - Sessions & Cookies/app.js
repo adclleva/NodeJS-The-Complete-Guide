@@ -41,16 +41,6 @@ app.use(
   })
 );
 
-app.use((req, res, next) => {
-  User.findById("62a1177c8368104cec55dc29")
-    .then((user) => {
-      // setting this to be part of the upcoming requests in our action controllers
-      req.user = user;
-      next();
-    })
-    .catch((err) => console.log(err));
-});
-
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);
