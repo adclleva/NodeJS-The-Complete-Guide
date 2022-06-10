@@ -6,7 +6,7 @@ exports.getLogin = (req, res, next) => {
   res.render("auth/login", {
     path: "/login",
     pageTitle: "Login",
-    isAuthenticated: false,
+    errorMessage: req.flash("error"),
   });
 };
 
@@ -14,7 +14,6 @@ exports.getSignup = (req, res, next) => {
   res.render("auth/signup", {
     path: "/signup",
     pageTitle: "Signup",
-    isAuthenticated: false,
   });
 };
 
@@ -26,6 +25,7 @@ exports.postLogin = (req, res, next) => {
     .then((user) => {
       // if user doesn't exist
       if (!user) {
+        req.flash("error", "Invalid email or password");
         return res.redirect("/login");
       } else {
         // compares the inputted password with the password from the data base and also returns a promise

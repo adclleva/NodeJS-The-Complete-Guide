@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 const session = require("express-session");
 const MongoDBStore = require("connect-mongodb-session")(session);
 const csrf = require("csurf");
+const flash = require("connect-flash");
 
 const errorController = require("./controllers/error");
 const User = require("./models/user");
@@ -39,6 +40,7 @@ app.use(
 );
 
 app.use(csrfProtection);
+app.use(flash()); // give access to flash within the request object
 
 app.use((req, res, next) => {
   if (!req.session.user) {
@@ -55,9 +57,9 @@ app.use((req, res, next) => {
 // for CSRF protection in production environments
 app.use((req, res, next) => {
   // setting up local variables that are passed to the views and will be avialable for each request
-  (res.locals.isAuthenticated = req.session.isLoggedIn),
-    (res.locals.csrfToken = req.csrfToken()), // this is provided by the csurf package
-    next();
+  res.locals.isAuthenticated = req.session.isLoggedIn;
+  res.locals.csrfToken = req.csrfToken(); // this is provided by the csurf package
+  next();
 });
 
 // application routes
