@@ -52,6 +52,15 @@ app.use((req, res, next) => {
     .catch((err) => console.log(err));
 });
 
+// for CSRF protection in production environments
+app.use((req, res, next) => {
+  // setting up local variables that are passed to the views and will be avialable for each request
+  (res.locals.isAuthenticated = req.session.isLoggedIn),
+    (res.locals.csrfToken = req.csrfToken()), // this is provided by the csurf package
+    next();
+});
+
+// application routes
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);
