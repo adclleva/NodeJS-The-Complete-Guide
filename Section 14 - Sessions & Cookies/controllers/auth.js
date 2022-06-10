@@ -19,7 +19,7 @@ exports.postLogin = (req, res, next) => {
       req.session.isLoggedIn = true;
       req.session.user = user;
 
-      // this is to ensure that the session has been saved
+      // this is to ensure that the session has been saved before redirecting because of a race condition
       req.session.save((err) => {
         console.log(err);
         // this redirect completes the request
