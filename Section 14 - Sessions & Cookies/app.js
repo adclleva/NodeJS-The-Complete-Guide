@@ -7,10 +7,19 @@ const mongoose = require("mongoose");
 // sessions are done server side while cookie are done on the client
 const session = require("express-session");
 
+// use a session store for storing session data within the database and not memory for production
+const MongoDBStore = require("connect-mongodb-session")(session); // we pass the session to execut the store
+
 const errorController = require("./controllers/error");
 const User = require("./models/user");
 
+const MONGODB_URI = "mongodb+srv://arvin:mongodb123%21@cluster0.996hxxe.mongodb.net/shop?retryWrites=true&w=majority";
+
 const app = express();
+const store = new MongoDBStore({
+  uri: MONGODB_URI,
+  collection: "sessions",
+});
 
 app.set("view engine", "ejs");
 app.set("views", "views");
@@ -28,6 +37,7 @@ app.use(
     secret: "my secret",
     resave: false,
     saveUninitialized: false,
+    store: store,
   })
 );
 
@@ -48,7 +58,7 @@ app.use(authRoutes);
 app.use(errorController.get404);
 
 mongoose
-  .connect("mongodb+srv://arvin:mongodb123%21@cluster0.996hxxe.mongodb.net/shop?retryWrites=true&w=majority", {
+  .connect(MONGODB_URI, {
     useUnifiedTopology: true,
     useNewUrlParser: true,
   })
@@ -56,8 +66,8 @@ mongoose
     User.findOne().then((user) => {
       if (!user) {
         const user = new User({
-          name: "Max",
-          email: "max@test.com",
+          name: "Arvin",
+          email: "Arvin@test.com",
           cart: {
             items: [],
           },
