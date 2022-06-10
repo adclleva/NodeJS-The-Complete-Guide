@@ -19,14 +19,36 @@ exports.getSignup = (req, res, next) => {
 };
 
 exports.postLogin = (req, res, next) => {
-  User.findById("5bab316ce0a7c75f783cb8a8")
+  const email = req.body.email;
+  const password = req.body.password;
+
+  User.findOne({ email: email })
     .then((user) => {
-      req.session.isLoggedIn = true;
-      req.session.user = user;
-      req.session.save((err) => {
-        console.log(err);
-        res.redirect("/");
-      });
+      // if user doesn't exist
+      if (!user) {
+        return res.redirect("/login");
+      } else {
+        // compares the inputted password with the password from the data base and also returns a promise
+        bcrypt
+          .compare(password, user.password)
+          .then((passwordMatches) => {
+            if (passwordMatches) {
+              req.session.isLoggedIn = true;
+              req.session.user = user;
+              return req.session.save((err) => {
+                console.log(err);
+                res.redirect("/");
+              });
+            } else {
+              return res.redirect("/login");
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+            // if the comparison fails
+            res.redirect("/login");
+          });
+      }
     })
     .catch((err) => console.log(err));
 };
