@@ -44,22 +44,24 @@ exports.postSignup = (req, res, next) => {
       if (userDocument) {
         return res.redirect("/signup");
       } else {
-        return bcrypt.hash(password, 12); // this reurns a promise
-      }
-    })
-    .then((hashedPassword) => {
-      const user = new User({
-        email: email,
-        password: hashedPassword,
-        cart: {
-          items: [],
-        },
-      });
+        // this returns a promise and we want to make the password secured by hashing it
+        return bcrypt
+          .hash(password, 12)
+          .then((hashedPassword) => {
+            const user = new User({
+              email: email,
+              password: hashedPassword,
+              cart: {
+                items: [],
+              },
+            });
 
-      return user.save();
-    })
-    .then((result) => {
-      res.redirect("/login");
+            return user.save();
+          })
+          .then((result) => {
+            res.redirect("/login");
+          });
+      }
     })
     .catch((err) => console.log(err));
 };
