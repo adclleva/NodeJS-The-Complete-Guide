@@ -1,4 +1,5 @@
 exports.getLogin = (req, res, next) => {
+  // to grab and setup the cookie
   let isAuthenticated = false;
   let cookieString = req.get("Cookie");
 
@@ -7,11 +8,11 @@ exports.getLogin = (req, res, next) => {
 
     cookieArray.forEach((cookie) => {
       if (cookie.includes("loggedIn")) {
-        isAuthenticated = cookie.split("=")[1] == "true";
+        isAuthenticated = cookie.split("=")[1] === "true";
       }
     });
   }
-  console.log("isAuthenticated", isAuthenticated);
+
   res.render("auth/login", {
     path: "/login",
     pageTitle: "Login",
