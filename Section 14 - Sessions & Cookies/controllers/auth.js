@@ -21,8 +21,8 @@ exports.getLogin = (req, res, next) => {
 };
 
 exports.postLogin = (req, res, next) => {
-  // to set a cookie which holds data specific to each user
-  res.setHeader("Set-Cookie", "loggedIn=true; HttpOnly");
+  // we save this session via server side, which the data is saved across requests but not users
+  req.session.isLoggedIn = true;
 
   // this redirect completes the request
   res.redirect("/");
