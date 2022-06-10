@@ -4,6 +4,9 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 
+// sessions are done server side while cookie are done on the client
+const session = require("express-session");
+
 const errorController = require("./controllers/error");
 const User = require("./models/user");
 
@@ -18,6 +21,15 @@ const authRoutes = require("./routes/auth");
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
+
+// to initialize the session middleware
+app.use(
+  session({
+    secret: "my secret",
+    resave: false,
+    saveUninitialized: false,
+  })
+);
 
 app.use((req, res, next) => {
   User.findById("62a1177c8368104cec55dc29")
