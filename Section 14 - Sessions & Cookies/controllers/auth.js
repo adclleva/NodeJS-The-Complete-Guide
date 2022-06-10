@@ -22,7 +22,7 @@ exports.getLogin = (req, res, next) => {
 
 exports.postLogin = (req, res, next) => {
   // to set a cookie which holds data specific to each user
-  res.setHeader("Set-Cookie", "loggedIn=true");
+  res.setHeader("Set-Cookie", "loggedIn=true; HttpOnly");
 
   // this redirect completes the request
   res.redirect("/");
