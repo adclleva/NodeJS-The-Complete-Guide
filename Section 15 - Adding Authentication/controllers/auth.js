@@ -19,9 +19,18 @@ exports.getLogin = (req, res, next) => {
 };
 
 exports.getSignup = (req, res, next) => {
+  let errorMessage = req.flash("error");
+
+  if (errorMessage.length > 0) {
+    errorMessage = errorMessage[0];
+  } else {
+    errorMessage = null;
+  }
+
   res.render("auth/signup", {
     path: "/signup",
     pageTitle: "Signup",
+    errorMessage: errorMessage,
   });
 };
 
@@ -48,6 +57,7 @@ exports.postLogin = (req, res, next) => {
                 res.redirect("/");
               });
             } else {
+              req.flash("error", "Invalid email or password");
               return res.redirect("/login");
             }
           })
@@ -72,6 +82,7 @@ exports.postSignup = (req, res, next) => {
   })
     .then((userDocument) => {
       if (userDocument) {
+        req.flash("error", "E-mail exists already, please pick a different one.");
         return res.redirect("/signup");
       } else {
         // this returns a promise and we want to make the password secured by hashing it
