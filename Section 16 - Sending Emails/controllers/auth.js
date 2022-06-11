@@ -117,7 +117,12 @@ exports.postSignup = (req, res, next) => {
               html: "<strong>You successfully signed up!</strong>",
             };
 
-            sgMail.send(emailMessageObject);
+            sgMail
+              .send(emailMessageObject)
+              .then(() => {
+                console.log("email sent");
+              })
+              .catch((err) => console.log(err));
           });
       }
     })
