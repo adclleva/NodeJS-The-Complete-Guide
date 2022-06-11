@@ -9,7 +9,7 @@
       "request": "launch",
       "name": "Launch Program",
       "skipFiles": ["<node_internals>/**"],
-      "program": "${workspaceFolder}/Section 16 - Sending Emails",
+      "program": "${workspaceFolder}/Section 17 - Advanced Authentication",
       "restart": true,
       "runtimeExecutable": "nodemon",
       "console": "integratedTerminal"
