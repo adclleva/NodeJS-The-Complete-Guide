@@ -9,7 +9,7 @@
       "request": "launch",
       "name": "Launch Program",
       "skipFiles": ["<node_internals>/**"],
-      "program": "${workspaceFolder}/Section 14 - Sessions & Cookies",
+      "program": "${workspaceFolder}/Section 15 - Adding Authentication",
       "restart": true,
       "runtimeExecutable": "nodemon",
       "console": "integratedTerminal"
