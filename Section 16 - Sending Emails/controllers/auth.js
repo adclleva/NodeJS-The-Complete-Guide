@@ -1,5 +1,12 @@
 const bcrypt = require("bcryptjs");
 
+const sgMail = require("@sendgrid/mail");
+
+const SENDGRID_API_KEY = "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";
+
+// sets up and connects to the sendgrid api
+sgMail.setApiKey(SENDGRID_API_KEY);
+
 const User = require("../models/user");
 
 exports.getLogin = (req, res, next) => {
@@ -101,6 +108,16 @@ exports.postSignup = (req, res, next) => {
           })
           .then((result) => {
             res.redirect("/login");
+
+            const emailMessageObject = {
+              to: email,
+              from: "arvin.lleva.al@gmail.com",
+              subject: "Signup succeeded",
+              text: "Testing Node Email Service",
+              html: "<strong>You successfully signed up!</strong>",
+            };
+
+            sgMail.send(emailMessageObject);
           });
       }
     })
