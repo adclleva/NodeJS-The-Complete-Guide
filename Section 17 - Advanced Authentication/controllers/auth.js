@@ -1,9 +1,11 @@
+const crypto = require("crypto"); // library that helps us create secure random values
+
 const bcrypt = require("bcryptjs");
 
 const sgMail = require("@sendgrid/mail");
 
 // sets up and connects to the sendgrid api
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+sgMail.setApiKey(`SG.${process.env.SENDGRID_API_KEY}`);
 
 const User = require("../models/user");
 
@@ -147,5 +149,51 @@ exports.getReset = (req, res, next) => {
     path: "/reset",
     pageTitle: "Reset Password",
     errorMessage: errorMessage,
+  });
+};
+
+exports.postReset = (req, res, next) => {
+  crypto.randomBytes(32, (err, buffer) => {
+    if (err) {
+      console.log(err);
+      return res.redirect("/reset");
+    }
+
+    // logic to set the resetToken to the User
+    const token = buffer.toString("hex");
+
+    User.findOne({ email: req.body.email })
+      .then((user) => {
+        if (!user) {
+          req.flash("error", "No account with that email found.");
+          return res.redirect("/reset");
+        }
+
+        user.resetToken = token;
+        user.resetTokenExpiration = Date.now() + 360000;
+        return user.save();
+      })
+      .then((result) => {
+        res.redirect("/");
+        // the token is used to check from the database
+        const emailMessageObject = {
+          to: req.body.email,
+          from: "arvin.lleva.al@gmail.com",
+          subject: "Password Reset",
+          text: "Testing Node Email Service",
+          html: `
+          <p>You requested a password reset</p>
+          <p>Click this <a href="http://localhost:3000/reset/${token}">link</a> to set a new password.</p>           
+          `,
+        };
+
+        sgMail
+          .send(emailMessageObject)
+          .then(() => {
+            console.log("email sent");
+          })
+          .catch((err) => console.log(err));
+      })
+      .catch((err) => console.log(err));
   });
 };
