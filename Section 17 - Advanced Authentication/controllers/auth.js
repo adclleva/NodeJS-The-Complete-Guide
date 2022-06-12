@@ -197,3 +197,30 @@ exports.postReset = (req, res, next) => {
       .catch((err) => console.log(err));
   });
 };
+
+exports.getNewPassword = (req, res, next) => {
+  // we need to check if the user has a valid token to change a new password
+  const token = req.params.token;
+  User.findOne({
+    resetToken: token,
+    // we use mongoDB's greater than comparision to check the time of the resetTokenExpiration
+    resetTokenExpiration: { $gt: Date.now() },
+  })
+    .then((user) => {
+      let errorMessage = req.flash("error");
+
+      if (errorMessage.length > 0) {
+        errorMessage = errorMessage[0];
+      } else {
+        errorMessage = null;
+      }
+
+      res.render("auth/new-password", {
+        path: "/new-password",
+        pageTitle: "New Password",
+        errorMessage: errorMessage,
+        userId: user._id.toString(),
+      });
+    })
+    .catch((err) => console.log(err));
+};
