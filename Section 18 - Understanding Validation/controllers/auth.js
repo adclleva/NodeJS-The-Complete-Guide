@@ -24,6 +24,11 @@ exports.getLogin = (req, res, next) => {
     path: "/login",
     pageTitle: "Login",
     errorMessage: errorMessage,
+    oldInput: {
+      email: "",
+      password: "",
+    },
+    validationErrors: [],
   });
 };
 
@@ -61,6 +66,11 @@ exports.postLogin = (req, res, next) => {
       path: "/login",
       pageTitle: "Login",
       errorMessage: errors.array()[0].msg,
+      oldInput: {
+        email: email,
+        password: password,
+      },
+      validationErrors: errors.array(),
     });
   }
 
@@ -68,8 +78,16 @@ exports.postLogin = (req, res, next) => {
     .then((user) => {
       // if user doesn't exist
       if (!user) {
-        req.flash("error", "Invalid email or password");
-        return res.redirect("/login");
+        return res.status(422).render("auth/login", {
+          path: "/login",
+          pageTitle: "Login",
+          errorMessage: errors.array()[0].msg,
+          oldInput: {
+            email: email,
+            password: password,
+          },
+          validationErrors: [{ param: "email", param: "password" }],
+        });
       } else {
         // compares the inputted password with the password from the data base and also returns a promise
         bcrypt
@@ -83,8 +101,16 @@ exports.postLogin = (req, res, next) => {
                 res.redirect("/");
               });
             } else {
-              req.flash("error", "Invalid email or password");
-              return res.redirect("/login");
+              return res.status(422).render("auth/login", {
+                path: "/login",
+                pageTitle: "Login",
+                errorMessage: errors.array()[0].msg,
+                oldInput: {
+                  email: email,
+                  password: password,
+                },
+                validationErrors: [{ param: "email", param: "password" }],
+              });
             }
           })
           .catch((err) => {
