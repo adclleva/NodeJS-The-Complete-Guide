@@ -40,11 +40,13 @@ exports.getSignup = (req, res, next) => {
     path: "/signup",
     pageTitle: "Signup",
     errorMessage: errorMessage,
+    // the inputs are initially empty
     oldInput: {
       email: "",
       password: "",
       confirmPassword: "",
     },
+    validationErrors: [],
   });
 };
 
@@ -114,6 +116,7 @@ exports.postSignup = (req, res, next) => {
         password: password,
         confirmPassword: confirmPassword,
       },
+      validationErrors: errors.array(),
     });
   }
 
