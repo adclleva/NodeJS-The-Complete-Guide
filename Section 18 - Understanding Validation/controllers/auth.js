@@ -4,6 +4,8 @@ const bcrypt = require("bcryptjs");
 
 const sgMail = require("@sendgrid/mail");
 
+const { validationResult } = require("express-validator/check");
+
 // sets up and connects to the sendgrid api
 sgMail.setApiKey(`SG.${process.env.SENDGRID_API_KEY}`);
 
@@ -82,6 +84,18 @@ exports.postSignup = (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
   const confirmPassword = req.body.confirmPassword;
+
+  // we get the errors by the middleware set up within the auth controllers by the express-validator package
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    console.log(errors.array());
+    return res.status(422).render("auth/signup", {
+      path: "signup",
+      pageTitle: "Signup",
+      errorMessage: errors.array(),
+    });
+  }
 
   // to find any user duplicates within the database
   User.findOne({

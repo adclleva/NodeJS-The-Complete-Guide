@@ -1,8 +1,11 @@
 const express = require("express");
+const { check } = require("express-validator/check");
 
 const authController = require("../controllers/auth");
 
 const router = express.Router();
+
+// after setting up a path, we can set up as many middlewars and control handlers as we want
 
 router.get("/login", authController.getLogin);
 
@@ -10,7 +13,8 @@ router.get("/signup", authController.getSignup);
 
 router.post("/login", authController.postLogin);
 
-router.post("/signup", authController.postSignup);
+// email validation
+router.post("/signup", check("email").isEmail(), authController.postSignup);
 
 router.post("/logout", authController.postLogout);
 

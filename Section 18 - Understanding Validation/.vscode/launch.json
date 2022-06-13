@@ -9,7 +9,7 @@
       "request": "launch",
       "name": "Launch Program",
       "skipFiles": ["<node_internals>/**"],
-      "program": "${workspaceFolder}/Section 17 - Advanced Authentication",
+      "program": "${workspaceFolder}/Section 18 - Understanding Validation",
       "restart": true,
       "runtimeExecutable": "nodemon",
       "console": "integratedTerminal"
