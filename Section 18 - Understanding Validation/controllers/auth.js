@@ -83,7 +83,6 @@ exports.postLogin = (req, res, next) => {
 exports.postSignup = (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
-  const confirmPassword = req.body.confirmPassword;
 
   // we get the errors by the middleware set up within the auth controllers by the express-validator package
   const errors = validationResult(req);
@@ -97,50 +96,38 @@ exports.postSignup = (req, res, next) => {
     });
   }
 
-  // to find any user duplicates within the database
-  User.findOne({
-    email: email,
-  })
-    .then((userDocument) => {
-      if (userDocument) {
-        req.flash("error", "E-mail exists already, please pick a different one.");
-        return res.redirect("/signup");
-      } else {
-        // this returns a promise and we want to make the password secured by hashing it
-        return bcrypt
-          .hash(password, 12)
-          .then((hashedPassword) => {
-            const user = new User({
-              email: email,
-              password: hashedPassword,
-              cart: {
-                items: [],
-              },
-            });
+  // we instantly hash the new password
+  bcrypt
+    .hash(password, 12)
+    .then((hashedPassword) => {
+      const user = new User({
+        email: email,
+        password: hashedPassword,
+        cart: {
+          items: [],
+        },
+      });
 
-            return user.save();
-          })
-          .then((result) => {
-            res.redirect("/login");
-
-            const emailMessageObject = {
-              to: email,
-              from: "arvin.lleva.al@gmail.com",
-              subject: "Signup succeeded",
-              text: "Testing Node Email Service",
-              html: "<strong>You successfully signed up!</strong>",
-            };
-
-            sgMail
-              .send(emailMessageObject)
-              .then(() => {
-                console.log("email sent");
-              })
-              .catch((err) => console.log(err));
-          });
-      }
+      return user.save();
     })
-    .catch((err) => console.log(err));
+    .then((result) => {
+      res.redirect("/login");
+
+      const emailMessageObject = {
+        to: email,
+        from: "arvin.lleva.al@gmail.com",
+        subject: "Signup succeeded",
+        text: "Testing Node Email Service",
+        html: "<strong>You successfully signed up!</strong>",
+      };
+
+      sgMail
+        .send(emailMessageObject)
+        .then(() => {
+          console.log("email sent");
+        })
+        .catch((err) => console.log(err));
+    });
 };
 
 exports.postLogout = (req, res, next) => {

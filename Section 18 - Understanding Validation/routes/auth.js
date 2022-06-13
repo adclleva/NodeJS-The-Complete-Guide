@@ -2,6 +2,7 @@ const express = require("express");
 const { check, body } = require("express-validator/check");
 
 const authController = require("../controllers/auth");
+const User = require("../models/user");
 
 const router = express.Router();
 
@@ -21,11 +22,22 @@ router.post(
       .isEmail()
       .withMessage("Please enter a valid email")
       .custom((value, { req }) => {
-        if (value === "test@test.com") {
-          throw new Error("This email triggers our custom validation");
-        }
+        // if (value === "test@test.com") {
+        //   throw new Error("This email triggers our custom validation");
+        // }
         // have to return true for the validations to pass
-        return true;
+        // return true
+
+        // we throw an error inside the promise and we return a promise and express-validator will wait for this promise to be fulfilled
+        // this is an asynchronous validation
+        return User.findOne({ email: value }).then((userDocument) => {
+          if (userDocument) {
+            return Promise.reject(
+              // this will be stored as an error message
+              "E-mail exists alread, please pick a different one."
+            );
+          }
+        });
       }),
 
     // this will validation the req body
