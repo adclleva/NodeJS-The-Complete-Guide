@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const { validationResult } = require("express-validator/check");
 
 const Product = require("../models/product");
@@ -23,7 +24,7 @@ exports.postAddProduct = (req, res, next) => {
   if (!errors.isEmpty()) {
     return res.status(422).render("admin/edit-product", {
       pageTitle: "Add Product",
-      path: "/admin/edit-product",
+      path: "/admin/add-product",
       editing: false,
       hasError: true,
       product: {
@@ -38,6 +39,7 @@ exports.postAddProduct = (req, res, next) => {
   }
 
   const product = new Product({
+    _id: new mongoose.Types.ObjectId("62a119efa07a62614c205fee"), // testing an error to throw
     title: title,
     price: price,
     description: description,
@@ -52,7 +54,25 @@ exports.postAddProduct = (req, res, next) => {
       res.redirect("/admin/products");
     })
     .catch((err) => {
-      console.log(err);
+      console.log("An error occurred");
+      // status code 500 is a server side error has occurred
+      // return res.status(500).render("admin/edit-product", {
+      //   pageTitle: "Add Product",
+      //   path: "/admin/add-product",
+      //   editing: false,
+      //   hasError: true,
+      //   product: {
+      //     title: title,
+      //     imageUrl: imageUrl,
+      //     price: price,
+      //     description: description,
+      //   },
+      //   errorMessage: "Database operation false, please try again.",
+      //   validationErrors: [],
+      // });
+
+      // an alternative way to resolve this error
+      res.redirect("/500");
     });
 };
 
