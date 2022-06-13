@@ -15,8 +15,8 @@ router.get("/signup", authController.getSignup);
 router.post(
   "/login",
   [
-    body("email").isEmail().withMessage("Please enter a valid email address."),
-    body("password", "Password has to be valid").isLength({ min: 5 }).isAlphanumeric(),
+    body("email").isEmail().withMessage("Please enter a valid email address.").normalizeEmail(),
+    body("password", "Password has to be valid").isLength({ min: 5 }).isAlphanumeric().trim(),
   ],
   authController.postLogin
 );
@@ -45,21 +45,25 @@ router.post(
             );
           }
         });
-      }),
+      })
+      .normalizeEmail(),
 
     // this will validation the req body
     // adding the message to the second parameter displays the message for all validation error checks
     body("password", "Please enter a password with only numbers and text and at least 5 characters")
       .isLength({ min: 5 })
-      .isAlphanumeric(),
+      .isAlphanumeric()
+      .trim(),
 
     // this validation checks if the password and confirmPassword is the same
-    body("confirmPassword").custom((value, { req }) => {
-      if (value !== req.body.password) {
-        throw new Error("Password have to match!");
-      }
-      return true;
-    }),
+    body("confirmPassword")
+      .trim()
+      .custom((value, { req }) => {
+        if (value !== req.body.password) {
+          throw new Error("Password have to match!");
+        }
+        return true;
+      }),
   ],
   authController.postSignup
 );
