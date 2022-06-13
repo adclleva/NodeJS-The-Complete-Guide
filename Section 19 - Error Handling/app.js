@@ -78,6 +78,14 @@ app.use(authRoutes);
 app.get("/500", errorController.get500);
 app.use(errorController.get404);
 
+// express recognizes the error special middleware
+app.use((error, req, res, next) => {
+  // *** this is if we pass in the status code
+  // res.status(error.httpStatusCode).render(...)
+  console.log("ERROR:", error);
+  res.redirect("/500");
+});
+
 mongoose
   .connect(MONGODB_URI, {
     useUnifiedTopology: true,

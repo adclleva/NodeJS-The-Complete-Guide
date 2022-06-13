@@ -56,7 +56,8 @@ exports.postAddProduct = (req, res, next) => {
     .catch((err) => {
       console.log("An error occurred");
       // status code 500 is a server side error has occurred
-      // return res.status(500).render("admin/edit-product", {
+      // *** one way to resolve this error
+      //   return res.status(500).render("admin/edit-product", {
       //   pageTitle: "Add Product",
       //   path: "/admin/add-product",
       //   editing: false,
@@ -71,8 +72,16 @@ exports.postAddProduct = (req, res, next) => {
       //   validationErrors: [],
       // });
 
-      // an alternative way to resolve this error
-      res.redirect("/500");
+      // *** an alternative way to resolve this error
+      // res.redirect("/500");
+
+      // *** an express way of resolving errors
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+
+      // when an error is passed to the next function, it skips all middleware and goes to the error handling middleware
+      // the error handled middleware is in the app.js file
+      return next(error);
     });
 };
 
@@ -97,7 +106,12 @@ exports.getEditProduct = (req, res, next) => {
         validationErrors: [],
       });
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      // *** an express way of resolving errors
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
+    });
 };
 
 exports.postEditProduct = (req, res, next) => {
