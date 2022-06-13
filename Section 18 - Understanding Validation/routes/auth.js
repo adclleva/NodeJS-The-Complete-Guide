@@ -1,5 +1,5 @@
 const express = require("express");
-const { check } = require("express-validator/check");
+const { check, body } = require("express-validator/check");
 
 const authController = require("../controllers/auth");
 
@@ -16,15 +16,22 @@ router.post("/login", authController.postLogin);
 // email validation
 router.post(
   "/signup",
-  check("email")
-    .isEmail()
-    .withMessage("Please enter a valid email")
-    .custom((value, { req }) => {
-      if (value === "test@test.com") {
-        throw new Error("This email triggers our custom validation");
-      }
-      return true;
-    }),
+  [
+    check("email")
+      .isEmail()
+      .withMessage("Please enter a valid email")
+      .custom((value, { req }) => {
+        if (value === "test@test.com") {
+          throw new Error("This email triggers our custom validation");
+        }
+        return true;
+      }),
+    // this will validation the req body
+    // adding the message to the second parameter displays the message for all validation error checks
+    body("password", "Please enter a password with only numbers and text and at least 5 characters")
+      .isLength({ min: 5 })
+      .isAlphanumeric(),
+  ],
   authController.postSignup
 );
 
