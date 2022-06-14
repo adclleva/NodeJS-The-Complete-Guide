@@ -186,8 +186,21 @@ exports.getInvoice = (req, res, next) => {
       pdfDocument.pipe(fs.createWriteStream(invoicePath));
       pdfDocument.pipe(res);
 
-      pdfDocument.text("Hello World!");
+      pdfDocument.fontSize(26).text("Invoice", {
+        underline: true,
+      });
 
+      pdfDocument.text("------------------------");
+
+      let totalPrice = 0;
+
+      order.products.forEach((prod) => {
+        totalPrice += prod.quantity * prod.product.price;
+        pdfDocument.fontSize(14).text(`${prod.product.title} - ${prod.quantity} x $${prod.product.price}`);
+      });
+
+      pdfDocument.text("------------------------");
+      pdfDocument.fontSize(20).text(`Total Price: $${totalPrice}`);
       pdfDocument.end(); // to tell node that we are done writing to the stream
 
       // *** for bigger files, fs.readFile() may not be a good option and we should be streaming our response data
