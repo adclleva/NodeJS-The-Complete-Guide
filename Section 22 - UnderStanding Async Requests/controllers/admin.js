@@ -217,8 +217,8 @@ exports.getProducts = (req, res, next) => {
     });
 };
 
-exports.postDeleteProduct = (req, res, next) => {
-  const prodId = req.body.productId;
+exports.deleteProduct = (req, res, next) => {
+  const prodId = req.params.productId;
 
   // for deleting a product
   Product.findById(prodId)
@@ -232,12 +232,16 @@ exports.postDeleteProduct = (req, res, next) => {
     })
     .then(() => {
       console.log("DESTROYED PRODUCT");
-      res.redirect("/admin/products");
+      // res.redirect("/admin/products");
+      res.status(200).json({ message: "Success!" });
     })
     .catch((err) => {
       // *** an express way of resolving errors
-      const error = new Error(err);
-      error.httpStatusCode = 500;
-      return next(error);
+      // const error = new Error(err);
+      // error.httpStatusCode = 500;
+      // return next(error);
+
+      // returning json responses
+      res.status(500).json({ message: "Deleting product failed." });
     });
 };
