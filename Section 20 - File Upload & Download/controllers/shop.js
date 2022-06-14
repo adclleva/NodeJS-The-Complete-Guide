@@ -168,6 +168,10 @@ exports.getInvoice = (req, res, next) => {
       return next(err); // run the default middlewar error handler
     }
 
+    res.setHeader("Content-Type", "application/pdf"); // this enables us to open the file within the browser
+
+    res.setHeader("Content-Disposition", `inline; filename="${invoiceName}"`); // defines how the content should be served to the client
+
     //data will be in a form of a buffer
     res.send(data);
   });
