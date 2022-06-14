@@ -1,6 +1,8 @@
 const fs = require("fs"); // core node module
 const path = require("path"); // we use this path module so we can accomodate all operating systems
 
+const PDFDocument = require("pdfkit");
+
 const Product = require("../models/product");
 const Order = require("../models/order");
 
@@ -176,6 +178,18 @@ exports.getInvoice = (req, res, next) => {
       const invoiceName = "invoice-" + orderId + ".pdf";
       const invoicePath = path.join("data", "invoices", invoiceName);
 
+      const pdfDocument = new PDFDocument(); // this is a readable stream
+
+      res.setHeader("Content-Type", "application/pdf"); // this enables us to open the file within the browser
+      res.setHeader("Content-Disposition", `inline; filename="${invoiceName}"`); // defines how the content should be served to the client
+
+      pdfDocument.pipe(fs.createWriteStream(invoicePath));
+      pdfDocument.pipe(res);
+
+      pdfDocument.text("Hello World!");
+
+      pdfDocument.end(); // to tell node that we are done writing to the stream
+
       // *** for bigger files, fs.readFile() may not be a good option and we should be streaming our response data
       // fs.readFile(invoicePath, (err, data) => {
       //   if (err) {
@@ -190,10 +204,11 @@ exports.getInvoice = (req, res, next) => {
       //   res.send(data);
       // });
 
-      const file = fs.createReadStream(invoicePath);
+      // *** example below is for reading static files from our project
+      // const file = fs.createReadStream(invoicePath);
 
-      res.setHeader("Content-Type", "application/pdf"); // this enables us to open the file within the browser
-      res.setHeader("Content-Disposition", `inline; filename="${invoiceName}"`); // defines how the content should be served to the client
+      // res.setHeader("Content-Type", "application/pdf"); // this enables us to open the file within the browser
+      // res.setHeader("Content-Disposition", `inline; filename="${invoiceName}"`); // defines how the content should be served to the client
 
       /**
        * the response will be steamded to the browser and will contain the data and the data will basically be
@@ -202,7 +217,7 @@ exports.getInvoice = (req, res, next) => {
        * we work with the chunks and the buffers basically gives us access to these chunks and
        * we forward them to the browser which is able to concatenate the incoming data pieces into the final file
        */
-      file.pipe(res);
+      // file.pipe(res);
     })
     .catch((err) => {
       // *** an express way of resolving errors
