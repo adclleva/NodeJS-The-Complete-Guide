@@ -54,7 +54,12 @@ const authRoutes = require("./routes/auth");
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(multer({ storage: fileStorage, fileFilter: fileFilter }).single("image"));
 
+// statically serving files means that requests to files in that folder will be handled automatically and the files will be returned by express
 app.use(express.static(path.join(__dirname, "public")));
+
+// if we have a request to serve a file that starts with /images, we'll serve that path given
+app.use("/images", express.static(path.join(__dirname, "images")));
+
 app.use(
   session({
     secret: "my secret",
