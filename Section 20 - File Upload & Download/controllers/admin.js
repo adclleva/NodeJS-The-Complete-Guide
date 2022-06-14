@@ -16,11 +16,11 @@ exports.getAddProduct = (req, res, next) => {
 
 exports.postAddProduct = (req, res, next) => {
   const title = req.body.title;
-  const imageUrl = req.body.image;
+  const imageUrl = req.file;
   const price = req.body.price;
   const description = req.body.description;
   const errors = validationResult(req);
-
+  console.log("imageUrl", imageUrl);
   if (!errors.isEmpty()) {
     return res.status(422).render("admin/edit-product", {
       pageTitle: "Add Product",
@@ -54,7 +54,6 @@ exports.postAddProduct = (req, res, next) => {
       res.redirect("/admin/products");
     })
     .catch((err) => {
-      console.log("An error occurred");
       // status code 500 is a server side error has occurred
       // *** one way to resolve this error
       //   return res.status(500).render("admin/edit-product", {
