@@ -163,10 +163,12 @@ exports.getInvoice = (req, res, next) => {
 
   Order.findById(orderId)
     .then((order) => {
+      // order validation
       if (!order) {
         return next(new Error("No order found."));
       }
 
+      // userId match validation
       if (order.user.userId.toString() !== req.user._id.toString()) {
         return next(new Error("Unauthorized"));
       }
@@ -174,18 +176,33 @@ exports.getInvoice = (req, res, next) => {
       const invoiceName = "invoice-" + orderId + ".pdf";
       const invoicePath = path.join("data", "invoices", invoiceName);
 
-      fs.readFile(invoicePath, (err, data) => {
-        if (err) {
-          return next(err); // run the default middlewar error handler
-        }
+      // *** for bigger files, fs.readFile() may not be a good option and we should be streaming our response data
+      // fs.readFile(invoicePath, (err, data) => {
+      //   if (err) {
+      //     return next(err); // run the default middlewar error handler
+      //   }
 
-        res.setHeader("Content-Type", "application/pdf"); // this enables us to open the file within the browser
+      //   res.setHeader("Content-Type", "application/pdf"); // this enables us to open the file within the browser
 
-        res.setHeader("Content-Disposition", `inline; filename="${invoiceName}"`); // defines how the content should be served to the client
+      //   res.setHeader("Content-Disposition", `inline; filename="${invoiceName}"`); // defines how the content should be served to the client
 
-        //data will be in a form of a buffer
-        res.send(data);
-      });
+      //data will be in a form of a buffer
+      //   res.send(data);
+      // });
+
+      const file = fs.createReadStream(invoicePath);
+
+      res.setHeader("Content-Type", "application/pdf"); // this enables us to open the file within the browser
+      res.setHeader("Content-Disposition", `inline; filename="${invoiceName}"`); // defines how the content should be served to the client
+
+      /**
+       * the response will be steamded to the browser and will contain the data and the data will basically be
+       * downloaded by the browser step by step for large files, which is good because node never has to pre-load all the
+       * data into memory but streams it into the client on the fly and stored into one chunk of data.
+       * we work with the chunks and the buffers basically gives us access to these chunks and
+       * we forward them to the browser which is able to concatenate the incoming data pieces into the final file
+       */
+      file.pipe(res);
     })
     .catch((err) => {
       // *** an express way of resolving errors
