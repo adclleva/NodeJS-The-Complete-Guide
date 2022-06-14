@@ -44,12 +44,24 @@ app.use(
 app.use(csrfProtection);
 app.use(flash()); // give access to flash within the request object
 
+// for CSRF protection in production environments
 app.use((req, res, next) => {
+  // setting up local variables that are passed to the views and will be avialable for each request
+  res.locals.isAuthenticated = req.session.isLoggedIn;
+  res.locals.csrfToken = req.csrfToken(); // this is provided by the csurf package
+  next();
+});
+
+app.use((req, res, next) => {
+  // this will only work for synchronous and the error middleware will catch it
+  // throw new Error("Sync Dummy");
+
   if (!req.session.user) {
     return next();
   }
   User.findById(req.session.user._id)
     .then((user) => {
+      // throw new Error("Dummy async error");
       if (!user) {
         return next();
       }
@@ -58,16 +70,10 @@ app.use((req, res, next) => {
     })
     .catch((err) => {
       console.log(err);
-      throw new Error(err); // express can deal with this thrown error
-    });
-});
 
-// for CSRF protection in production environments
-app.use((req, res, next) => {
-  // setting up local variables that are passed to the views and will be avialable for each request
-  res.locals.isAuthenticated = req.session.isLoggedIn;
-  res.locals.csrfToken = req.csrfToken(); // this is provided by the csurf package
-  next();
+      // this only works for async code and the error middleware will catch it
+      next(new Error(err));
+    });
 });
 
 // application routes
@@ -83,7 +89,13 @@ app.use((error, req, res, next) => {
   // *** this is if we pass in the status code
   // res.status(error.httpStatusCode).render(...)
   console.log("ERROR:", error);
-  res.redirect("/500");
+  // res.redirect("/500");
+
+  res.status(500).render("500", {
+    pageTitle: "Page Not Found",
+    path: "/500",
+    isAuthenticated: req.session.isLoggedIn,
+  });
 });
 
 mongoose
