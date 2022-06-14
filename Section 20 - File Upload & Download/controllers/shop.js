@@ -160,19 +160,37 @@ exports.getOrders = (req, res, next) => {
 
 exports.getInvoice = (req, res, next) => {
   const orderId = req.params.orderId;
-  const invoiceName = "invoice-" + orderId + ".pdf";
-  const invoicePath = path.join("data", "invoices", invoiceName);
 
-  fs.readFile(invoicePath, (err, data) => {
-    if (err) {
-      return next(err); // run the default middlewar error handler
-    }
+  Order.findById(orderId)
+    .then((order) => {
+      if (!order) {
+        return next(new Error("No order found."));
+      }
 
-    res.setHeader("Content-Type", "application/pdf"); // this enables us to open the file within the browser
+      if (order.user.userId.toString() !== req.user._id.toString()) {
+        return next(new Error("Unauthorized"));
+      }
 
-    res.setHeader("Content-Disposition", `inline; filename="${invoiceName}"`); // defines how the content should be served to the client
+      const invoiceName = "invoice-" + orderId + ".pdf";
+      const invoicePath = path.join("data", "invoices", invoiceName);
 
-    //data will be in a form of a buffer
-    res.send(data);
-  });
+      fs.readFile(invoicePath, (err, data) => {
+        if (err) {
+          return next(err); // run the default middlewar error handler
+        }
+
+        res.setHeader("Content-Type", "application/pdf"); // this enables us to open the file within the browser
+
+        res.setHeader("Content-Disposition", `inline; filename="${invoiceName}"`); // defines how the content should be served to the client
+
+        //data will be in a form of a buffer
+        res.send(data);
+      });
+    })
+    .catch((err) => {
+      // *** an express way of resolving errors
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
+    });
 };
