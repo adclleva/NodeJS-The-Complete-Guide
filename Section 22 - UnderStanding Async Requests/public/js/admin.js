@@ -5,6 +5,8 @@ const deleteProduct = (button) => {
   const productId = button.parentNode.querySelector("[name=productId").value;
   const csrf = button.parentNode.querySelector("[name=_csrf]").value;
 
+  const productElement = button.closest("article");
+
   // can be used for sending data as well
   fetch(`/admin/product/${productId}`, {
     method: "DELETE",
@@ -15,6 +17,11 @@ const deleteProduct = (button) => {
   })
     .then((result) => {
       console.log(result);
+      return result.json();
+    })
+    .then((data) => {
+      console.log(data);
+      productElement.parentNode.removeChild(productElement);
     })
     .catch((err) => console.log(err));
 };
