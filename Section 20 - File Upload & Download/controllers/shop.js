@@ -1,3 +1,6 @@
+const fs = require("fs"); // core node module
+const path = require("path"); // we use this path module so we can accomodate all operating systems
+
 const Product = require("../models/product");
 const Order = require("../models/order");
 
@@ -153,4 +156,19 @@ exports.getOrders = (req, res, next) => {
       error.httpStatusCode = 500;
       return next(error);
     });
+};
+
+exports.getInvoice = (req, res, next) => {
+  const orderId = req.params.orderId;
+  const invoiceName = "invoice-" + orderId + ".pdf";
+  const invoicePath = path.join("data", "invoices", invoiceName);
+
+  fs.readFile(invoicePath, (err, data) => {
+    if (err) {
+      return next(err); // run the default middlewar error handler
+    }
+
+    //data will be in a form of a buffer
+    res.send(data);
+  });
 };
